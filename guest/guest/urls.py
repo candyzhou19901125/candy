@@ -30,4 +30,6 @@ urlpatterns = [
     url(r'^search_phone/$', views.search_phone),
     url(r'^guest_manage/$', views.guest_manage),
     url(r'^sign_index/(?P<eid>[0-9]+)/$', views.sign_index),
+    url(r'^sign_index_action/(?P<eid>[0-9]+)/$', views.sign_index_action),
+    url(r'^logout/$', views.logout),
 ]
