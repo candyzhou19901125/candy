@@ -100,19 +100,28 @@ def sign_index(request, eid):
 def sign_index_action(request, eid):
     event = get_object_or_404(Event, id=eid)
     phone = request.POST.get('phone', '')
-    print(phone)
+    guest_list = Guest.objects.filter(event_id=eid)
+    sign_list = Guest.objects.filter(sign="1", event_id=eid)
+    guest_data = str(len(guest_list))
+    sign_data = str(len(sign_list))
+    # print(phone)
     result = Guest.objects.filter(phone=phone)
     if not result:
-        return render(request, 'sign_index.html', {'event': event, 'hint': 'phone error.'})
+        return render(request, 'sign_index.html', {'event': event, 'hint': 'phone error.',
+                                                   'guestnum': guest_data, 'signnum': sign_data})
     result = Guest.objects.filter(phone=phone, event_id=eid)
     if not result:
-        return render(request, 'sign_index.html', {'event': event, 'hint': 'event id or phone error.'})
+        return render(request, 'sign_index.html', {'event': event, 'hint': 'event id or phone error.',
+                                                   'guestnum': guest_data, 'signnum': sign_data})
     result = Guest.objects.get(phone=phone, event_id=eid)
     if result.sign:
-        return render(request,'sign_index.html',{'event':event, 'hint': 'user has sign in.'})
+        return render(request, 'sign_index.html', {'event': event, 'hint': 'user has sign in.',
+                                                   'guestnum': guest_data, 'signnum': sign_data})
     else:
-        Guest.objects.filter(phone=phone, event_id =eid).update(sign='1')
-        return render(request, 'sign_index.html',{'event':event,  'hint': 'sign in success!', 'guest': result})
+        Guest.objects.filter(phone=phone, event_id=eid).update(sign='1')
+        sign_data = str(len(sign_list)+1)
+        return render(request, 'sign_index.html', {'event': event,  'hint': 'sign in success!', 'guest': result,
+                                                   'guestnum': guest_data, 'signnum': sign_data})
 
 
 # 退出登录
@@ -121,6 +130,7 @@ def logout(request):
     auth.logout(request)  # 退出登录
     response = HttpResponseRedirect('/index/')
     return response
+
 
 
 
